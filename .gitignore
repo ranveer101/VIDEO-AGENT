@@ -1,0 +1,15 @@
+.env
+.venv/
+venv/
+
+__pycache__/
+*.py[cod]
+*.log
+
+downloads/
+downloades/
+vector_db/
+video_mind.db
+
+.DS_Store
+Thumbs.db

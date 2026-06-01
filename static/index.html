@@ -1,0 +1,194 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Video Mind</title>
+    <link rel="stylesheet" href="/static/styles.css" />
+    <script defer src="/static/app.js"></script>
+  </head>
+  <body>
+    <section id="authScreen" class="auth-screen">
+      <div class="auth-card">
+        <div class="brand auth-brand">
+          <div class="brand-mark">VM</div>
+          <div>
+            <span>Video Mind</span>
+            <small>Login to open your analysis dashboard</small>
+          </div>
+        </div>
+
+        <div class="auth-tabs">
+          <button id="loginTab" class="auth-tab active" type="button">Login</button>
+          <button id="registerTab" class="auth-tab" type="button">Register</button>
+        </div>
+
+        <form id="loginForm" class="auth-form">
+          <label class="field">
+            <span>Email</span>
+            <input id="loginEmail" type="email" required autocomplete="email" placeholder="you@example.com" />
+          </label>
+          <label class="field">
+            <span>Password</span>
+            <input id="loginPassword" type="password" required minlength="6" autocomplete="current-password" placeholder="Minimum 6 characters" />
+          </label>
+          <button class="primary-btn" type="submit">Login</button>
+        </form>
+
+        <form id="registerForm" class="auth-form hidden">
+          <label class="field">
+            <span>Name</span>
+            <input id="registerName" type="text" required autocomplete="name" placeholder="Your name" />
+          </label>
+          <label class="field">
+            <span>Email</span>
+            <input id="registerEmail" type="email" required autocomplete="email" placeholder="you@example.com" />
+          </label>
+          <label class="field">
+            <span>Password</span>
+            <input id="registerPassword" type="password" required minlength="6" autocomplete="new-password" placeholder="Minimum 6 characters" />
+          </label>
+          <button class="primary-btn" type="submit">Create Account</button>
+        </form>
+
+        <p id="authMessage" class="auth-message"></p>
+      </div>
+    </section>
+
+    <main id="dashboardApp" class="app-shell hidden">
+      <section class="hero-band">
+        <nav class="topbar">
+          <div class="brand">
+            <div class="brand-mark">VM</div>
+            <div>
+              <span>Video Mind</span>
+              <small>Transcript intelligence studio</small>
+            </div>
+          </div>
+          <div class="top-actions">
+            <span id="userBadge" class="user-badge"></span>
+            <button id="cleanupBtn" class="icon-btn" type="button">Cleanup Files</button>
+            <button id="logoutBtn" class="icon-btn" type="button">Logout</button>
+          </div>
+        </nav>
+
+        <div class="hero-grid">
+          <div class="hero-copy">
+            <p class="eyebrow">AI analysis cockpit</p>
+            <h1>Turn video into decisions, summaries, and searchable memory.</h1>
+            <p class="hero-text">Upload a file or paste a YouTube link. Video Mind shows every processing stage, cleans temporary files, and keeps your last five analyses ready for quick review.</p>
+          </div>
+
+          <form id="analyzeForm" class="command-card">
+            <label class="field">
+              <span>Video URL</span>
+              <input id="source" name="source" type="url" placeholder="https://youtube.com/watch?v=..." />
+            </label>
+
+            <label class="upload-zone" for="file">
+              <input id="file" name="file" type="file" accept="audio/*,video/*" />
+              <strong>Upload video or audio</strong>
+              <span id="fileName">MP4, MOV, MP3, WAV</span>
+            </label>
+
+            <div class="control-grid">
+              <label class="field">
+                <span>Language</span>
+                <select id="language" name="language">
+                  <option value="english">English</option>
+                  <option value="hinglish">Hinglish</option>
+                </select>
+              </label>
+
+              <label class="field">
+                <span>Mode</span>
+                <select id="contentType" name="content_type">
+                  <option value="meeting">Meeting</option>
+                  <option value="general">General Video</option>
+                </select>
+              </label>
+            </div>
+
+            <button id="analyzeBtn" class="primary-btn" type="submit">Run Analysis</button>
+          </form>
+        </div>
+      </section>
+
+      <section class="dashboard">
+        <aside class="side-stack">
+          <section id="progressPanel" class="glass-card progress-card">
+            <div class="card-head">
+              <div>
+                <p class="eyebrow">Live Processing</p>
+                <h2 id="statusTitle">Ready</h2>
+              </div>
+              <span id="statusBadge" class="status-badge idle">Idle</span>
+            </div>
+            <div class="progress-ring">
+              <div class="ring-core">
+                <strong id="progressPercent">0%</strong>
+                <span id="statusText">Waiting for input</span>
+              </div>
+            </div>
+            <div id="stageList" class="stage-list"></div>
+          </section>
+
+          <section class="glass-card history-card">
+            <div class="card-head">
+              <div>
+                <p class="eyebrow">Recent Work</p>
+                <h2>Last 5 analyses</h2>
+              </div>
+            </div>
+            <div id="historyList" class="history-list"></div>
+          </section>
+        </aside>
+
+        <section class="main-stage">
+          <div id="emptyState" class="empty-state glass-card">
+            <div class="visual-orbit">
+              <span></span><span></span><span></span>
+            </div>
+            <p class="eyebrow">Awaiting Signal</p>
+            <h2>Results will appear as a polished intelligence brief.</h2>
+            <p>Summary, insights, transcript, and chat are arranged for scanning like a real product dashboard.</p>
+          </div>
+
+          <div id="results" class="results hidden">
+            <section class="brief-header glass-card">
+              <div>
+                <p id="resultType" class="eyebrow">Analysis</p>
+                <h2 id="title"></h2>
+              </div>
+              <button id="toggleTranscript" class="secondary-btn" type="button">Transcript</button>
+            </section>
+
+            <section class="summary-brief glass-card">
+              <p class="eyebrow">Executive Summary</p>
+              <div id="summary" class="rich-text"></div>
+            </section>
+
+            <section id="insightGrid" class="insight-grid"></section>
+
+            <section id="transcriptPanel" class="transcript glass-card hidden">
+              <p class="eyebrow">Full Transcript</p>
+              <pre id="transcript"></pre>
+            </section>
+
+            <section class="chat-panel glass-card">
+              <div>
+                <p class="eyebrow">Ask Video Mind</p>
+                <h3>Chat with the transcript memory</h3>
+              </div>
+              <div id="chatLog" class="chat-log"></div>
+              <form id="chatForm" class="chat-form">
+                <input id="question" type="text" placeholder="Ask about decisions, themes, examples..." />
+                <button class="primary-btn compact" type="submit">Send</button>
+              </form>
+            </section>
+          </div>
+        </section>
+      </section>
+    </main>
+  </body>
+</html>
