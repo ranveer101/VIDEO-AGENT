@@ -1,4 +1,5 @@
 import uuid
+from pathlib import Path
 
 from langchain_chroma import Chroma
 from langchain_community.embeddings import HuggingFaceEmbeddings
@@ -6,7 +7,7 @@ from langchain_core.documents import Document
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 
 
-CHROMA_DIR = "vector_db"
+CHROMA_DIR = str(Path(__file__).resolve().parent.parent / "vector_db")
 COLLECTION_PREFIX = "video_mind"
 EMBEDDING_MODEL = "all-MiniLM-L6-v2"
 

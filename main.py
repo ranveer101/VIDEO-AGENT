@@ -1,6 +1,12 @@
-from collections.abc import Callable
 
+import sys
+
+
+sys.stdout.reconfigure(encoding="utf-8")
+sys.stderr.reconfigure(encoding="utf-8")
+from collections.abc import Callable
 from dotenv import load_dotenv
+from core.category import classify_video
 
 from core.extractor import (
     extract_action_items,
@@ -43,14 +49,23 @@ def run_pipeline(
     title = generate_title(transcript, content_type=content_type)
     summary = summarize(transcript, content_type=content_type)
 
+    category = classify_video(transcript)
+ 
+    print("Category:", category)
+ 
+    
+
+      
+
     _progress(progress_callback, "insights", "Generating structured insights and output sections.", 72)
     result = {
-        "title": title,
-        "transcript": transcript,
-        "summary": summary,
-        "content_type": content_type,
-        "generated_files": generated_files,
-    }
+    "title": title,
+    "transcript": transcript,
+    "summary": summary,
+    "category": category,
+    "content_type": content_type,
+    "generated_files": generated_files,
+}
 
     if content_type.lower() == "meeting":
         result.update(

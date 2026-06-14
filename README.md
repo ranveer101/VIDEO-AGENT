@@ -50,7 +50,7 @@ pip install -r requirements.txt
 ```bash
 python -m uvicorn backend:app --host 127.0.0.1 --port 8000
 
-python -m uvicorn backend:app --host 127.0.0.1 --port 8001 --reload
+         python -m uvicorn backend:app --host 127.0.0.1 --port 8005 --reload
 ```
 
 6. Open:

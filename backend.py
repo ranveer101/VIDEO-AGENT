@@ -13,8 +13,12 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
+import sys
 
-from core.rag_engine import ask_question
+sys.stdout.reconfigure(encoding="utf-8")
+sys.stderr.reconfigure(encoding="utf-8")
+
+from core.rag_engine import ask_question, load_rag_chain
 from main import run_pipeline
 from storage import (
     create_token,
@@ -121,7 +125,7 @@ def _set_job(job_id: str, stage: str, detail: str, percent: int, status: str = "
 
 
 def _clean_result(result: dict, session_id: str) -> dict:
-    clean = {key: value for key, value in result.items() if key not in {"rag_chain", "generated_files", "collection_name"}}
+    clean = {key: value for key, value in result.items() if key not in {"rag_chain", "generated_files"}}
     clean["session_id"] = session_id
     return clean
 
@@ -306,6 +310,27 @@ def get_history_item(history_id: str, user: dict = Depends(_auth_user)):
     if not item or not item.get("result"):
         raise HTTPException(status_code=404, detail="No completed result for this entry")
     result = dict(item["result"])
+    session_id = result.get("session_id")
+    collection_name = result.get("collection_name")
+    if session_id and session_id not in sessions and collection_name:
+        try:
+            rag_chain = load_rag_chain(
+                collection_name=collection_name,
+                content_type=item["content_type"],
+                title=result.get("title", ""),
+                summary=result.get("summary", ""),
+            )
+            sessions[session_id] = {
+                "rag_chain": rag_chain,
+                "content_type": item["content_type"],
+                "title": result.get("title", ""),
+                "summary": result.get("summary", ""),
+                "collection_name": collection_name,
+                "source": item["source"],
+            }
+        except Exception as e:
+            print(f"Error restoring RAG session: {e}")
+            result["session_id"] = None
     if result.get("session_id") not in sessions:
         result["session_id"] = None
     return result

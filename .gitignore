@@ -1,15 +1,10 @@
 .env
-.venv/
 venv/
-
-__pycache__/
-*.py[cod]
-*.log
+.venv/
 
 downloads/
-downloades/
 vector_db/
 video_mind.db
 
-.DS_Store
-Thumbs.db
+__pycache__/
+*.pyc

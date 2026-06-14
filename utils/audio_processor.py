@@ -1,4 +1,5 @@
 import os
+import uuid
 from pathlib import Path
 
 import yt_dlp
@@ -21,7 +22,8 @@ def _clear_dead_proxy_env() -> None:
 
 def download_youtube_audio(url: str) -> str:
     _clear_dead_proxy_env()
-    output_path = os.path.join(DOWNLOAD_DIR, "%(title)s.%(ext)s")
+    unique_id = str(uuid.uuid4())
+    output_path = os.path.join(DOWNLOAD_DIR, f"{unique_id}.%(ext)s")
     ydl_opts = {
         "format": "bestaudio/best",
         "outtmpl": output_path,
@@ -36,8 +38,8 @@ def download_youtube_audio(url: str) -> str:
         "quiet": True,
     }
     with yt_dlp.YoutubeDL(ydl_opts) as ydl:
-        info = ydl.extract_info(url, download=True)
-        filename = ydl.prepare_filename(info).replace(".webm", ".wav").replace(".m4a", ".wav")
+        ydl.extract_info(url, download=True)
+        filename = os.path.join(DOWNLOAD_DIR, f"{unique_id}.wav")
     return filename
 
 
@@ -68,7 +70,10 @@ def process_input(source: str) -> tuple[list[str], list[str]]:
 
     if source.startswith("http://") or source.startswith("https://"):
         print("Detected YouTube URL. Downloading audio...")
-        wav_path = download_youtube_audio(source)
+        raw_wav_path = download_youtube_audio(source)
+        generated_files.append(raw_wav_path)
+        print("Converting downloaded audio to 16kHz mono WAV...")
+        wav_path = convert_to_wav(raw_wav_path)
     else:
         print("Detected local file. Converting to WAV...")
         wav_path = convert_to_wav(source)

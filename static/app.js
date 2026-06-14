@@ -221,6 +221,9 @@ window.rerunAnalysis = async (id) => {
 };
 
 function renderResults(payload) {
+  console.log("FULL PAYLOAD:", payload);
+  console.log("SENTIMENT:", payload.sentiment);
+  console.log("TYPE:", typeof payload.sentiment);
   activeSessionId = payload.session_id || null;
   emptyState.classList.add("hidden");
   results.classList.remove("hidden");
@@ -236,16 +239,23 @@ function renderResults(payload) {
   transcriptPanel.classList.add("hidden");
 
   const cards = payload.content_type === "meeting"
-    ? [
-        ["Action Items", payload.action_items],
-        ["Key Decisions", payload.key_decisions],
-        ["Open Questions", payload.open_questions],
-      ]
-    : [
-        ["Key Points", payload.key_points],
-        ["Takeaways", payload.takeaways],
-        ["Highlights", payload.highlights],
-      ];
+? [
+    ["Category", `${payload.category.label} (${payload.category.confidence}%)`],
+
+  
+    ["Action Items", payload.action_items],
+    ["Key Decisions", payload.key_decisions],
+    ["Open Questions", payload.open_questions],
+]
+: [
+    ["Category", `${payload.category.label} (${payload.category.confidence}%)`],
+
+    
+    ["Key Points", payload.key_points],
+    ["Takeaways", payload.takeaways],
+    ["Highlights", payload.highlights],
+];
+
 
   insightGrid.innerHTML = cards.map(([heading, body]) => `
     <article class="glass-card insight-card">
