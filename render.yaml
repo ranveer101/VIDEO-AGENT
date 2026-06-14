@@ -2,7 +2,7 @@ services:
   - type: web
     name: video-mind
     runtime: docker
-    plan: starter
+    plan: free
     healthCheckPath: /api/health
     envVars:
       - key: WHISPER_MODEL
